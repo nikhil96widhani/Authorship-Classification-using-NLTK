@@ -36,7 +36,7 @@ start = 0
 end = 200*150 #no of document * no of words per document
 for i in range(start, end,150):
     X1.append(emma_tokenize[i:i+150])
-    
+    print(X1)
 Y1 =[0]*200
 
 #Tokenization austen-sense.txt
