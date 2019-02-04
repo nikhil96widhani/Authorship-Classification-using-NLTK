@@ -36,7 +36,7 @@ start = 0
 end = 200*150 #no of document * no of words per document
 for i in range(start, end,150):
     X1.append(emma_tokenize[i:i+150])
-    print(X1)
+    
 Y1 =[0]*200
 
 #Tokenization austen-sense.txt
@@ -88,10 +88,31 @@ def shuffle(X, Y):
 X, Y = shuffle(X, Y)
 Y = np.reshape((Y), (-1,1))
 
+#Converting into Data Frame
+import pandas as pd
+X = pd.DataFrame(X)
+Y = pd.DataFrame(Y)
+
+#Joining all columns to form a scentence for BOW
+X=X.apply(" ".join, axis=1)
+
+#BOW 
+from sklearn.feature_extraction.text import CountVectorizer
+matrixBoW = CountVectorizer(max_features=1000)
+XBoW = matrixBoW.fit_transform(X).todense()
+XBoW= pd.DataFrame(XBoW, columns= matrixBoW.get_feature_names())
+
 #Splitting into Train and Test data 
 from sklearn.model_selection import train_test_split
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state=0)
 
+# =============================================================================
+# #Feature Scaling 
+# from sklearn.preprocessing import StandardScaler
+# sc_x = StandardScaler()
+# x_train = sc_x.fit_transform(X_train)
+# x_test =  sc_x.fit_transform(X_test)
+# =============================================================================
 
 # =============================================================================
 # #K-fold But why?
