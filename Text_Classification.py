@@ -94,7 +94,7 @@ X = pd.DataFrame(X)
 Y = pd.DataFrame(Y)
 
 #Joining all columns to form a scentence for BOW
-X=X.apply(" ".join, axis=1)
+X=X.apply(" ".join, axis=1) #Joining all Columns to form Scentences
 
 #BOW 
 from sklearn.feature_extraction.text import CountVectorizer
