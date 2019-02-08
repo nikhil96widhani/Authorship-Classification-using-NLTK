@@ -3,7 +3,7 @@
 """
 Created on Wed Jan 23 18:15:41 2019
 
-@author: nikhilwidhani
+@author: nikhilwidhani,
 """
 
 import numpy as np
@@ -79,14 +79,22 @@ Y = Y1+Y2+Y3
 X = np.array(X)
 Y = np.array(Y)
 
-def shuffle(X, Y):
-    permute = np.random.permutation(len(X))
-    X = X[permute]
-    Y = Y[permute]
-    return X, Y
+c = np.c_[X,Y]
+np.random.shuffle(c)
 
-X, Y = shuffle(X, Y)
-Y = np.reshape((Y), (-1,1))
+X = c[:,0:150]
+Y = c[:,-1:]
+
+# =============================================================================
+# def shuffle(X, Y):
+#     permute = np.random.permutation(len(X))
+#     X = X[permute]
+#     Y = Y[permute]
+#     return X, Y
+# 
+# X, Y = shuffle(X, Y)
+# Y = np.reshape((Y), (-1,1))
+# =============================================================================
 
 #Converting into Data Frame
 import pandas as pd
@@ -102,9 +110,59 @@ matrixBoW = CountVectorizer(max_features=1000)
 XBoW = matrixBoW.fit_transform(X).todense()
 XBoW= pd.DataFrame(XBoW, columns= matrixBoW.get_feature_names())
 
-#Splitting into Train and Test data 
+# using TF-IDF
+from sklearn.feature_extraction.text import TfidfVectorizer
+tf=TfidfVectorizer()
+text_tf= tf.fit_transform(X)
+
+#Split train and test set 
 from sklearn.model_selection import train_test_split
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.2, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(
+    text_tf, Y, test_size=0.3, random_state=0)
+
+
+#Model Building and Evaluation (TF-IDF)
+from sklearn.naive_bayes import MultinomialNB
+from sklearn import metrics
+
+from sklearn.metrics import accuracy_score
+from sklearn import metrics
+
+# Model Generation Using Multinomial Naive Bayes
+clf = MultinomialNB().fit(X_train, y_train.values.ravel())
+y_pred= clf.predict(X_test)
+print("Accuracy Naive Bayes:",metrics.accuracy_score(y_test, y_pred))
+
+#SVC
+from sklearn.svm import SVC  
+svclassifier = SVC(kernel='linear')  
+svclassifier.fit(X_train, y_train.values.ravel()) 
+y_pred = clf.predict(X_test)#Predict the response for test dataset
+print("Accuracy SVC:",metrics.accuracy_score(y_test, y_pred))
+
+#k neighbour BOW 
+from sklearn.neighbors import KNeighborsClassifier  
+classifier = KNeighborsClassifier(n_neighbors=5)  
+cl=classifier.fit(X_train, y_train.values.ravel())
+y_pred=cl.predict(X_test)
+print("Accuracy KNeighbours:",metrics.accuracy_score(y_test, y_pred))
+
+#Decision Tree
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+
+clf = DecisionTreeClassifier() # Create Decision Tree classifer object
+clf = clf.fit(X_train,y_train) # Train Decision Tree Classifer
+y_pred = clf.predict(X_test) #Predict the response for test dataset
+print("Accuracy Decision Tree:",metrics.accuracy_score(y_test, y_pred))
+
+
+
+#TFIDF
+# =============================================================================
+# #Splitting into Train and Test data 
+# from sklearn.model_selection import train_test_split
+# X_train, X_test, Y_train, Y_test = train_test_split(XBoW, Y, test_size = 0.2, random_state=0)
+# =============================================================================
 
 # =============================================================================
 # #Feature Scaling 
