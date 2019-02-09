@@ -118,19 +118,19 @@ text_tf= tf.fit_transform(X)
 #Split train and test set 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(
-    text_tf, Y, test_size=0.3, random_state=0)
+    XBoW, Y, test_size=0.3, random_state=0)
 
 
 #Model Building and Evaluation (TF-IDF)
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
-
 from sklearn.metrics import accuracy_score
 from sklearn import metrics
 
 # Model Generation Using Multinomial Naive Bayes
 clf = MultinomialNB().fit(X_train, y_train.values.ravel())
 y_pred= clf.predict(X_test)
+Accuracy_NB= metrics.accuracy_score(y_test, y_pred)
 print("Accuracy Naive Bayes:",metrics.accuracy_score(y_test, y_pred))
 
 #SVC
@@ -138,22 +138,41 @@ from sklearn.svm import SVC
 svclassifier = SVC(kernel='linear')  
 svclassifier.fit(X_train, y_train.values.ravel()) 
 y_pred = clf.predict(X_test)#Predict the response for test dataset
-print("Accuracy SVC:",metrics.accuracy_score(y_test, y_pred))
+Accuracy_SVC= metrics.accuracy_score(y_test, y_pred)
+print("Accuracy SVC:", Accuracy_SVC)
 
 #k neighbour BOW 
 from sklearn.neighbors import KNeighborsClassifier  
 classifier = KNeighborsClassifier(n_neighbors=5)  
 cl=classifier.fit(X_train, y_train.values.ravel())
 y_pred=cl.predict(X_test)
-print("Accuracy KNeighbours:",metrics.accuracy_score(y_test, y_pred))
+Accuracy_KNN= metrics.accuracy_score(y_test, y_pred)
+print("Accuracy KNeighbours:",Accuracy_KNN)
 
 #Decision Tree
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
-
 clf = DecisionTreeClassifier() # Create Decision Tree classifer object
 clf = clf.fit(X_train,y_train) # Train Decision Tree Classifer
 y_pred = clf.predict(X_test) #Predict the response for test dataset
-print("Accuracy Decision Tree:",metrics.accuracy_score(y_test, y_pred))
+Accuracy_DT= metrics.accuracy_score(y_test, y_pred)
+print("Accuracy Decision Tree:",Accuracy_DT)
+
+
+#Print Accuracy Of Models
+objects = ('BOW', 'TF-IDF', 'SVM', 'KNN', 'Decision Tree')
+y_pos = np.arange(len(objects))
+performance = [1, Accuracy_NB, Accuracy_SVC, Accuracy_KNN, Accuracy_DT]
+ 
+plt.bar(y_pos, performance, align='center', alpha=0.5)
+plt.xticks(y_pos, objects)
+plt.ylabel('Percentage')
+plt.title('Accuracy of different modals')
+ 
+plt.show()
+
+
+
+
 
 
 
