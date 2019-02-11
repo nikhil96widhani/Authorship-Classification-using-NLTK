@@ -3,7 +3,7 @@
 """
 Created on Wed Jan 23 18:15:41 2019
 
-@author: nikhilwidhani, SimarpalSingh
+@author: nikhilwidhani
 """
 
 import numpy as np
@@ -62,13 +62,27 @@ Y = Y1+Y2+Y3
 X = np.array(X)
 Y = np.array(Y)
 
+#Joining X,Y for shuffling
 C = np.c_[X, Y]
 np.random.shuffle(C)
 
+#Seprating into Data and Labels (X,Y)
 X = C[:, 0:150]
 Y = C[:, -1:]
 
 Y = np.reshape((Y), (-1,1))
+
+# =============================================================================
+# #Alternative methood for shuffling Without Joining X,Y 
+# def shuffle(X, Y):
+#     permute = np.random.permutation(len(X))
+#     X = X[permute]
+#     Y = Y[permute]
+#     return X, Y
+# 
+# X, Y = shuffle(X, Y)
+# Y = np.reshape((Y), (-1,1))
+# =============================================================================
 
 #Converting into Data Frame
 import pandas as pd
@@ -127,6 +141,7 @@ def perform_analysis(vectorizer, vectorized_data):
     dt_pred = dt_classifier.predict(X_test)    
     dt_accuracy = check_accuracy(y_test, dt_pred, 'Decision Tree', vectorizer)
     
+    #Kfold K=10
     seed = 7
     kfold = model_selection.KFold(n_splits=10, random_state=seed)
     model = LogisticRegression()
