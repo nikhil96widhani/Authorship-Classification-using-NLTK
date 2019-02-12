@@ -30,12 +30,6 @@ Run the Python interpreter and type the commands:
 >>> nltk.download()
 ```
 
-For production environments...
-
-```sh
-$ npm install --production
-$ NODE_ENV=production node app
-```
 ### System requirements
 [anaconda website](https://docs.anaconda.com/anaconda/install/)
 
